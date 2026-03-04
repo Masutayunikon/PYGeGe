@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/Masutayunikon/PYGeGe/compare/v1.1.0...v1.2.0) (2026-03-04)
+
+
+### Features
+
+* set ygg catégorie mapping ([239aff5](https://github.com/Masutayunikon/PYGeGe/commit/239aff5e3cde410c4c69e1cf799be14c219b24d2))
+
 ## [1.1.0](https://github.com/Masutayunikon/PYGeGe/compare/v1.0.4...v1.1.0) (2026-03-04)
 
 

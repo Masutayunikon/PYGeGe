@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.2.14](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.13...v1.2.14) (2026-03-04)
+
+
+### Bug Fixes
+
+* fix log ([ea43036](https://github.com/Masutayunikon/PYGeGe/commit/ea43036d9508f6180b51b4d6c284ac01cda8f282))
+
+## [1.2.13](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.12...v1.2.13) (2026-03-04)
+
+
+### Bug Fixes
+
+* fix docker version ([9ce2250](https://github.com/Masutayunikon/PYGeGe/commit/9ce2250bbe6d96e0adab6bb140fc30e5539f1532))
+* fix leechers ([a61eae5](https://github.com/Masutayunikon/PYGeGe/commit/a61eae5ee1702ca7e5954b27c68cef0ac465275d))
+* fix log ([090e2a0](https://github.com/Masutayunikon/PYGeGe/commit/090e2a0d03966dc12ba5ee674b2fffd79e62d71a))
+
+## [1.2.12](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.11...v1.2.12) (2026-03-04)
+
+
+### Bug Fixes
+
+* remove log ([a70531e](https://github.com/Masutayunikon/PYGeGe/commit/a70531e9fb70b10c2e22bff20185105e775e8ed1))
+
+## [1.2.11](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.10...v1.2.11) (2026-03-04)
+
+
+### Bug Fixes
+
+* magnet link ([33b8c31](https://github.com/Masutayunikon/PYGeGe/commit/33b8c313c06757b0df5001ecc294d270d2ffcf73))
+
+## [1.2.10](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.9...v1.2.10) (2026-03-04)
+
+
+### Bug Fixes
+
+* variable name ([b62a58e](https://github.com/Masutayunikon/PYGeGe/commit/b62a58efbbd71aebf526763645f6d0d627b2df1c))
+
 ## [1.2.9](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.8...v1.2.9) (2026-03-04)
 
 

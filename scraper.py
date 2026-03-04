@@ -3,6 +3,7 @@ import asyncio
 import json
 import logging
 import websockets
+from urllib.parse import quote
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,50 @@ def _get_tag_prefix(tags: list, prefix: str) -> str | None:
             return tag[1].split(":")[1]
     return None
 
+DEFAULT_TRACKERS = [
+    "https://tracker.yggleak.top/announce",
+    "udp://tracker.opentrackr.org:1337/announce",
+    "udp://open.demonii.com:1337/announce",
+    "udp://open.stealth.si:80/announce",
+    "udp://exodus.desync.com:6969/announce",
+    "https://torrent.tracker.durukanbal.com:443/announce",
+    "udp://tracker1.myporn.club:9337/announce",
+    "udp://tracker.torrent.eu.org:451/announce",
+    "udp://tracker.theoks.net:6969/announce",
+    "udp://tracker.srv00.com:6969/announce",
+    "udp://tracker.filemail.com:6969/announce",
+    "udp://tracker.dler.org:6969/announce",
+    "udp://tracker.corpscorp.online:80/announce",
+    "udp://tracker.alaskantf.com:6969/announce",
+    "udp://tracker-udp.gbitt.info:80/announce",
+    "udp://t.overflow.biz:6969/announce",
+    "udp://open.dstud.io:6969/announce",
+    "udp://leet-tracker.moe:1337/announce",
+    "udp://explodie.org:6969/announce",
+    "udp://bittorrent-tracker.e-n-c-r-y-p-t.net:1337/announce",
+    "udp://6ahddutb1ucc3cp.ru:6969/announce",
+    "udp://94.23.207.177:6969/announce",
+    "udp://37.59.48.81:6969/announce",
+    "udp://54.36.179.216:6969/announce",
+    "udp://193.42.111.57:9337/announce",
+    "udp://43.250.54.137:6969/announce",
+    "udp://91.216.110.53:451/announce",
+    "udp://45.134.88.121:6969/announce",
+    "udp://135.125.236.64:6969/announce",
+    "udp://5.255.124.190:6969/announce",
+    "udp://93.158.213.92:1337/announce",
+    "udp://107.189.4.235:1337/announce",
+    "udp://tracker.qu.ax:6969/announce",
+    "udp://107.189.7.165:1337/announce",
+    "udp://103.251.166.126:6969/announce",
+    "udp://185.243.218.213:80/announce",
+    "http://tracker.zhuqiy.com:80/announce",
+    "udp://81.230.84.201:6969/announce",
+    "udp://212.42.38.197:6969/announce",
+    "http://193.31.26.113:6969/announce",
+    "udp://176.99.7.59:6969/announce",
+    "http://tr.nyacat.pw:80/announce",
+]
 
 def _parse_event(event: dict) -> dict | None:
     """Parse un événement Nostr YGG en dict torrent."""
@@ -35,19 +80,28 @@ def _parse_event(event: dict) -> dict | None:
         hash_x = _get_tag(tags, "x")
         size = int(_get_tag(tags, "size") or 0)
         category = _get_tag_prefix(tags, "u2p.cat:")
-        seeders = int((_get_tag_prefix(tags, "u2p.seed:") or 0))
+
+        # seeders depuis tag "l":"u2p.seed:5"
+        seeders = int(_get_tag_prefix(tags, "u2p.seed:") or 0)
+        leechers = int(_get_tag_prefix(tags, "u2p.leech:") or 0)
+        completed = int(_get_tag_prefix(tags, "u2p.completed:") or 0)
+
 
         if not title or not hash_x:
             return None
 
-        magnet = f"magnet:?xt=urn:btih:{hash_x}&dn={title}"
+        # URL encode dn + trackers
+        magnet = f"magnet:?xt=urn:btih:{hash_x}&dn={quote(title)}"
+        for tr in DEFAULT_TRACKERS:
+            magnet += f"&tr={quote(tr, safe='')}"
 
         return {
             "id": event.get("id"),
             "name": title,
             "size": size,
             "seeders": seeders,
-            "leechers": 0,
+            "leechers": leechers,
+            "completed": completed,
             "timestamp": event.get("created_at", 0),
             "category": category,
             "download_url": magnet

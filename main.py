@@ -150,7 +150,7 @@ def build_torznab_xml(torrents: list[dict]) -> str:
             <guid>{t['id']}</guid>
             <link>{magnet}</link>
             <comments>{magnet}</comments>
-            <pubDate>{t[pubdate]}</pubDate>
+            <pubDate>{pubdate}</pubDate>
             <size>{t['size']}</size>
             <enclosure url="{magnet}" length="{t['size']}" type="application/x-bittorrent"/>
             <category>{torznab_cat}</category>

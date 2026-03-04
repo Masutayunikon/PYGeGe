@@ -1,12 +1,17 @@
 # main.py
+import asyncio
 import logging
 import re
 import secrets
 import os
+import httpx
 from fastapi import FastAPI, Query, HTTPException, Depends, Request
 from fastapi.responses import Response
 from scraper import search
 from email.utils import formatdate
+
+TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+MIN_RESULTS_THRESHOLD = 50
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -78,14 +83,42 @@ def verify_api_key(apikey: str = Query(...)):
     return apikey
 
 
+async def get_french_title(imdbid: str = None, tmdbid: str = None) -> str | None:
+    if not TMDB_API_KEY:
+        return None
+    try:
+        async with httpx.AsyncClient() as client:
+            if imdbid:
+                r = await client.get(
+                    f"https://api.themoviedb.org/3/find/{imdbid}",
+                    params={"api_key": TMDB_API_KEY, "external_source": "imdb_id"}
+                )
+                data = r.json()
+                results = data.get("movie_results") or data.get("tv_results") or []
+                if not results:
+                    return None
+                tmdbid = results[0]["id"]
+
+            if tmdbid:
+                r = await client.get(
+                    f"https://api.themoviedb.org/3/movie/{tmdbid}",
+                    params={"api_key": TMDB_API_KEY, "language": "fr-FR"}
+                )
+                data = r.json()
+                return data.get("title") or data.get("name")
+    except Exception as e:
+        logger.warning(f"⚠️ TMDB error: {e}")
+    return None
+
+
 def build_caps_xml() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
 <caps>
     <server title="PyGégé"/>
     <searching>
         <search available="yes" supportedParams="q,cat"/>
-        <tv-search available="yes" supportedParams="q,season,ep,cat"/>
-        <movie-search available="yes" supportedParams="q,cat"/>
+        <tv-search available="yes" supportedParams="q,season,ep,cat,imdbid,tmdbid"/>
+        <movie-search available="yes" supportedParams="q,cat,imdbid,tmdbid"/>
         <music-search available="yes" supportedParams="q,cat"/>
         <book-search available="yes" supportedParams="q,cat"/>
     </searching>
@@ -144,9 +177,8 @@ def build_torznab_xml(torrents: list[dict]) -> str:
         name = name.encode('utf-8', errors='replace').decode('utf-8')
         name = name.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
 
-        # Convert Unix timestamp -> RSS pubDate (RFC822 / GMT)
         ts = int(t.get("timestamp") or 0)
-        pubdate = formatdate(ts, usegmt=True)  # e.g. "Wed, 04 Mar 2026 01:52:53 GMT"
+        pubdate = formatdate(ts, usegmt=True)
 
         items += f"""<item>
             <title>{name}</title>
@@ -184,20 +216,20 @@ async def torznab(
     t: str = Query(...),
     q: str = Query(""),
     cat: str = Query(None),
+    imdbid: str = Query(None),
+    tmdbid: str = Query(None),
     limit: int = Query(50),
     offset: int = Query(0),
     apikey: str = Depends(verify_api_key)
 ):
     url = str(request.url)
     url = re.sub(r"apikey=[^&]+", "apikey=***", url)
-
     logger.info(f"📥 URL: {url}")
 
     if t == "caps":
         return Response(content=build_caps_xml(), media_type="application/xml")
 
     if t in ("search", "tvsearch", "movie"):
-        # Traduit cats Torznab -> pcat YGG
         ygg_pcats = []
         if cat:
             seen = set()
@@ -207,11 +239,33 @@ async def torznab(
                     ygg_pcats.append(pcat)
                     seen.add(pcat)
 
-        results = await search(query=q, categories=ygg_pcats if ygg_pcats else None, limit=limit + offset)
+        cats = ygg_pcats if ygg_pcats else None
+
+        # Cherche le titre français si imdbid/tmdbid dispo et TMDB configuré
+        french_title = None
+        if (imdbid or tmdbid) and TMDB_API_KEY:
+            french_title = await get_french_title(imdbid=imdbid, tmdbid=tmdbid)
+            if french_title and french_title.lower() == q.lower():
+                french_title = None  # Déjà en français
+
+        if french_title:
+            logger.info(f"🇫🇷 Titre français : {french_title} (VO: {q})")
+            results = await search(query=french_title, categories=cats, limit=limit + offset)
+
+            if len(results) < MIN_RESULTS_THRESHOLD and q:
+                logger.info(f"🔍 {len(results)} résultats FR, recherche VO aussi...")
+                results_vo = await search(query=q, categories=cats, limit=limit + offset)
+                seen_ids = {r['id'] for r in results}
+                for r in results_vo:
+                    if r['id'] not in seen_ids:
+                        results.append(r)
+        else:
+            results = await search(query=q, categories=cats, limit=limit + offset)
+
         page = results[offset:offset + limit]
         logger.info(f"🎯 {len(page)} résultats retournés (offset={offset})")
         return Response(
-            content=build_torznab_xml(results).encode("utf-8"),
+            content=build_torznab_xml(page).encode("utf-8"),
             media_type="application/xml; charset=utf-8"
         )
 

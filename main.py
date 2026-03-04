@@ -4,7 +4,7 @@ import re
 import secrets
 import os
 from fastapi import FastAPI, Query, HTTPException, Depends, Request
-from fastapi.responses import Response
+from fastapi.responses import HTMLResponse, Response
 from scraper import search
 from email.utils import formatdate
 
@@ -140,11 +140,13 @@ def build_torznab_xml(torrents: list[dict]) -> str:
         ygg_cat = str(t['category'] or "2183")
         torznab_cat = YGG_TO_TORZNAB.get(ygg_cat, "8000")
         magnet = t['download_url'].replace('&', '&amp;')
-        name = t['name'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        name = t['name'].replace('&', '&amp;').replace(
+            '<', '&lt;').replace('>', '&gt;')
 
         # Convert Unix timestamp -> RSS pubDate (RFC822 / GMT)
         ts = int(t.get("timestamp") or 0)
-        pubdate = formatdate(ts, usegmt=True)  # e.g. "Wed, 04 Mar 2026 01:52:53 GMT"
+        # e.g. "Wed, 04 Mar 2026 01:52:53 GMT"
+        pubdate = formatdate(ts, usegmt=True)
 
         items += f"""<item>
             <title>{name}</title>
@@ -174,6 +176,75 @@ def build_torznab_xml(torrents: list[dict]) -> str:
 
 
 app = FastAPI(title="PyGégé - YGG Torznab API")
+
+
+@app.get("/", response_class=HTMLResponse)
+async def home():
+    return """<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PyGeGe - Service en ligne</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 8vh auto;
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.4rem;
+    }
+    p {
+      line-height: 1.5;
+    }
+    .tips {
+      margin-top: 16px;
+      padding: 12px;
+      border-left: 4px solid #2563eb;
+      background: #eff6ff;
+      border-radius: 6px;
+    }
+    a {
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Si vous voyez ceci, Pygege est en ligne ! .</h1>
+    <p>
+      Lien documentation :
+      <a href="https://github.com/Masutayunikon/PYGeGe" target="_blank" rel="noopener noreferrer">
+        https://github.com/Masutayunikon/PYGeGe
+      </a>
+    </p>
+    <div class="tips">
+      <strong>Tips :</strong>
+      Si Prowlarr n'arrive pas a s'y connecter, verifiez que vous avez mis
+      <code>http</code> et pas <code>https</code> (pas mettre le <code>s</code>).
+    </div>
+  </main>
+</body>
+</html>"""
 
 
 @app.get("/api")

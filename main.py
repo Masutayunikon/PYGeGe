@@ -110,6 +110,19 @@ CAT_TREE = {
     "2188": ["2189", "2190", "2191", "2401", "2402"],
 }
 
+YGG_PARENT = {
+    "2178": "2145", "2179": "2145", "2180": "2145", "2181": "2145",
+    "2182": "2145", "2183": "2145", "2184": "2145", "2185": "2145",
+    "2186": "2145", "2187": "2145",
+    "2147": "2139", "2148": "2139", "2149": "2139", "2150": "2139",
+    "2171": "2144", "2172": "2144", "2173": "2144", "2174": "2144",
+    "2175": "2144", "2176": "2144", "2177": "2144",
+    "2159": "2142", "2160": "2142", "2161": "2142", "2162": "2142",
+    "2163": "2142", "2164": "2142", "2165": "2142", "2166": "2142", "2167": "2142",
+    "2151": "2140", "2152": "2140", "2153": "2140", "2154": "2140",
+    "2155": "2140", "2156": "2140",
+}
+
 def build_caps_xml() -> str:
     cats = ""
     for parent_id, children in CAT_TREE.items():
@@ -133,8 +146,14 @@ def build_torznab_xml(torrents: list[dict]) -> str:
     items = ""
     for t in torrents:
         ygg_cat = str(t['category'] or "2183")
+        parent_cat = YGG_PARENT.get(ygg_cat)
+
         magnet = t['download_url'].replace('&', '&amp;')
         name = t['name'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+        cat_attrs = f'<torznab:attr name="category" value="{ygg_cat}"/>'
+        if parent_cat:
+            cat_attrs += f'\n            <torznab:attr name="category" value="{parent_cat}"/>'
 
         items += f"""<item>
             <title>{name}</title>
@@ -144,7 +163,7 @@ def build_torznab_xml(torrents: list[dict]) -> str:
             <torznab:attr name="seeders" value="{t['seeders']}"/>
             <torznab:attr name="leechers" value="{t['leechers']}"/>
             <torznab:attr name="size" value="{t['size']}"/>
-            <torznab:attr name="category" value="{ygg_cat}"/>
+            {cat_attrs}
         </item>"""
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>

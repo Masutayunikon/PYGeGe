@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.10](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.9...v1.2.10) (2026-03-04)
+
+
+### Bug Fixes
+
+* variable name ([b62a58e](https://github.com/Masutayunikon/PYGeGe/commit/b62a58efbbd71aebf526763645f6d0d627b2df1c))
+
 ## [1.2.9](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.8...v1.2.9) (2026-03-04)
 
 

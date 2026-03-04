@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/Masutayunikon/PYGeGe/compare/v1.0.4...v1.1.0) (2026-03-04)
+
+
+### Features
+
+* add log for debug ([111604e](https://github.com/Masutayunikon/PYGeGe/commit/111604e2682f52cbc6b40baecdc316b2335f4aae))
+
 ## [1.0.4](https://github.com/Masutayunikon/PYGeGe/compare/v1.0.3...v1.0.4) (2026-03-04)
 
 

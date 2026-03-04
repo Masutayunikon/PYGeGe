@@ -116,7 +116,7 @@ def build_caps_xml() -> str:
 <caps>
     <server title="PyGégé"/>
     <searching>
-        <search available="yes" supportedParams="q,cat"/>
+        <search available="yes" supportedParams="q,cat,imdbid,tmdbid"/>
         <tv-search available="yes" supportedParams="q,season,ep,cat,imdbid,tmdbid"/>
         <movie-search available="yes" supportedParams="q,cat,imdbid,tmdbid"/>
         <music-search available="yes" supportedParams="q,cat"/>

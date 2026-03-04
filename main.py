@@ -11,20 +11,6 @@ logger = logging.getLogger(__name__)
 
 API_KEY_FILE = "/app/data/api_key.txt"
 
-# Catégories YGG avec leurs parents
-CAT_TREE = {
-    "2145": ["2178", "2179", "2180", "2181", "2182", "2183", "2184", "2185", "2186", "2187"],
-    "2139": ["2147", "2148", "2149", "2150"],
-    "2144": ["2171", "2172", "2173", "2174", "2175", "2176", "2177"],
-    "2142": ["2159", "2160", "2161", "2162", "2163", "2164", "2165", "2166", "2167"],
-    "2140": ["2151", "2152", "2153", "2154", "2155", "2156"],
-    "2300": ["2301", "2302", "2303", "2304"],
-    "2200": ["2201", "2202"],
-    "2141": ["2157", "2158"],
-    "2143": ["2168", "2169", "2170"],
-    "2188": ["2189", "2190", "2191", "2401", "2402"],
-}
-
 ALL_CATS = {
     "2145": "Film/Vidéo",
     "2178": "Film/Vidéo : Animation",
@@ -91,16 +77,6 @@ ALL_CATS = {
 }
 
 
-def expand_cats(requested: list[str]) -> set[str]:
-    """Expand les catégories parentes vers toutes leurs sous-catégories."""
-    expanded = set()
-    for cat in requested:
-        expanded.add(cat)
-        if cat in CAT_TREE:
-            expanded.update(CAT_TREE[cat])
-    return expanded
-
-
 def load_or_create_api_key() -> str:
     os.makedirs(os.path.dirname(API_KEY_FILE), exist_ok=True)
     if os.path.exists(API_KEY_FILE):
@@ -121,37 +97,42 @@ def verify_api_key(apikey: str = Query(...)):
         raise HTTPException(status_code=401, detail="Clé API invalide")
     return apikey
 
+CAT_TREE = {
+    "2145": ["2178", "2179", "2180", "2181", "2182", "2183", "2184", "2185", "2186", "2187"],
+    "2139": ["2147", "2148", "2149", "2150"],
+    "2144": ["2171", "2172", "2173", "2174", "2175", "2176", "2177"],
+    "2142": ["2159", "2160", "2161", "2162", "2163", "2164", "2165", "2166", "2167"],
+    "2140": ["2151", "2152", "2153", "2154", "2155", "2156"],
+    "2300": ["2301", "2302", "2303", "2304"],
+    "2200": ["2201", "2202"],
+    "2141": ["2157", "2158"],
+    "2143": ["2168", "2169", "2170"],
+    "2188": ["2189", "2190", "2191", "2401", "2402"],
+}
 
 def build_caps_xml() -> str:
     cats = ""
-    for cat_id, name in ALL_CATS.items():
-        cats += f'<category id="{cat_id}" name="{name}"/>\n'
+    for parent_id, children in CAT_TREE.items():
+        parent_name = ALL_CATS[parent_id]
+        subcats = ""
+        for child_id in children:
+            child_name = ALL_CATS[child_id]
+            subcats += f'<subcat id="{child_id}" name="{child_name}"/>\n'
+        cats += f'<category id="{parent_id}" name="{parent_name}">\n{subcats}</category>\n'
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <caps>
-    <server title="PyGégé"/>
-    <searching>
-        <search available="yes" supportedParams="q,cat"/>
-        <tv-search available="yes" supportedParams="q,season,ep,cat"/>
-        <movie-search available="yes" supportedParams="q,cat"/>
-        <music-search available="yes" supportedParams="q,cat"/>
-        <book-search available="yes" supportedParams="q,cat"/>
-    </searching>
+    ...
     <categories>
         {cats}
     </categories>
 </caps>"""
 
 
-def build_torznab_xml(torrents: list[dict], requested_cats: set[str] = None) -> str:
+def build_torznab_xml(torrents: list[dict]) -> str:
     items = ""
     for t in torrents:
         ygg_cat = str(t['category'] or "2183")
-
-        # Filtre par catégorie si demandé
-        if requested_cats and ygg_cat not in requested_cats:
-            continue
-
         magnet = t['download_url'].replace('&', '&amp;')
         name = t['name'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
@@ -184,18 +165,20 @@ async def torznab(
     t: str = Query(...),
     q: str = Query(""),
     cat: str = Query(None),
+    limit: int = Query(50),
+    offset: int = Query(0),
     apikey: str = Depends(verify_api_key)
 ):
-    logger.info(f"📥 t={t} q={q} cat={cat}")
+    logger.info(f"📥 t={t} q={q} cat={cat} limit={limit} offset={offset}")
 
     if t == "caps":
         return Response(content=build_caps_xml(), media_type="application/xml")
 
     if t in ("search", "tvsearch", "movie"):
-        requested_cats = expand_cats(cat.split(",")) if cat else None
-        results = await search(query=q)
-        logger.info(f"🎯 {len(results)} résultats, filtre cats: {requested_cats}")
-        return Response(content=build_torznab_xml(results, requested_cats), media_type="application/xml")
+        cats = cat.split(",") if cat else None
+        results = await search(query=q, categories=cats, limit=limit)
+        logger.info(f"🎯 {len(results)} résultats retournés")
+        return Response(content=build_torznab_xml(results), media_type="application/xml")
 
     raise HTTPException(status_code=400, detail=f"Type inconnu : {t}")
 

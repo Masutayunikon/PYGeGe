@@ -94,31 +94,36 @@ async def _search_async(query: str, category: str = None, limit: int = 50) -> li
     return results
 
 
-async def search(query: str, category: str = None, limit: int = 50) -> list[dict]:
-    """Recherche via WebSocket Nostr."""
+CAT_PARENTS = {"2145", "2139", "2144", "2142", "2140", "2300", "2200", "2141", "2143", "2188"}
+
+async def search(query: str, categories: list[str] = None, limit: int = 50) -> list[dict]:
     results = []
 
-    filters = {
-        "kinds": [YGG_KIND],
-        "search": query,
-        "limit": limit
-    }
-    if category:
-        filters["#l"] = [f"u2p.cat:{category}"]
+    l_filters = []
+    if categories:
+        for cat in categories:
+            if cat in CAT_PARENTS:
+                l_filters.append(f"u2p.pcat:{cat}")
+            else:
+                l_filters.append(f"u2p.cat:{cat}")
+
+    filters = {"kinds": [YGG_KIND], "limit": limit}
+    if query and query.strip():
+        filters["search"] = query
+    if l_filters:
+        filters["#l"] = l_filters
 
     try:
         async with websockets.connect(RELAY_URL) as ws:
             req = json.dumps(["REQ", "pygege-search", filters])
             await ws.send(req)
-            logger.info(f"🔍 Recherche Nostr : {query}")
+            logger.info(f"🔍 Recherche Nostr : '{query}' cats={l_filters}")
 
             async for message in ws:
                 data = json.loads(message)
-
                 if data[0] == "EOSE":
                     logger.info(f"✅ {len(results)} torrents trouvés")
                     break
-
                 if data[0] == "EVENT":
                     torrent = _parse_event(data[2])
                     if torrent:

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.7](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.6...v1.2.7) (2026-03-04)
+
+
+### Bug Fixes
+
+* ygg cat to tornzab cat ([5685e9c](https://github.com/Masutayunikon/PYGeGe/commit/5685e9c50abcf5242beb6a2c843ed9fa9ed52c76))
+
 ## [1.2.6](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.5...v1.2.6) (2026-03-04)
 
 

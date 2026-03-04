@@ -1,11 +1,12 @@
 services:
   pygege:
-    image: masutayunikon/pygege:latest
-    container_name: pygege
+    build: .
+    container_name: pygege-dev
     ports:
       - "8000:8000"
     volumes:
       - ./data:/app/data
-    environment:
-      - TMDB_API_KEY=
+      - .:/app
+    env_file:
+      - .env
     restart: unless-stopped

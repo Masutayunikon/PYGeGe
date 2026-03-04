@@ -1,5 +1,6 @@
 # main.py
 import logging
+import re
 import secrets
 import os
 from fastapi import FastAPI, Query, HTTPException, Depends, Request
@@ -185,8 +186,10 @@ async def torznab(
     offset: int = Query(0),
     apikey: str = Depends(verify_api_key)
 ):
-    # remove api_key from logs of request.url
-    logger.info(f"📥 URL: {request.url.replace(f'apikey={apikey}', 'apikey=***')}")
+    url = str(request.url)
+    url = re.sub(r"apikey=[^&]+", "apikey=***", url)
+
+    logger.info(f"📥 URL: {url}")
 
     if t == "caps":
         return Response(content=build_caps_xml(), media_type="application/xml")

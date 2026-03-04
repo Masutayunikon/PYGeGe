@@ -3,63 +3,251 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PyGeGe - Service en ligne</title>
+  <title>PyGeGe | Service en ligne</title>
   <style>
     :root {
-      color-scheme: light;
-      font-family: Arial, sans-serif;
+      --bg-0: #07080c;
+      --bg-1: #10141f;
+      --panel: #131a2a;
+      --line: #29324a;
+      --text: #f3f6ff;
+      --muted: #b9c4dd;
+      --ok: #3ddc97;
+      --warn-bg: #2a210d;
+      --warn-line: #f3be4f;
+      --brand: #f6c453;
+      --brand-deep: #b5851f;
+      --github: #24292f;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
     }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      background: #f4f6f8;
-      color: #1f2937;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Segoe UI", "Trebuchet MS", Verdana, sans-serif;
+      background:
+        radial-gradient(1200px 600px at -10% -20%, #223055 0%, rgba(34, 48, 85, 0) 60%),
+        radial-gradient(900px 500px at 120% 120%, #3a2e13 0%, rgba(58, 46, 19, 0) 62%),
+        linear-gradient(160deg, var(--bg-0) 10%, var(--bg-1) 100%);
+      display: grid;
+      place-items: center;
+      padding: 28px 16px;
     }
-    .wrap {
-      max-width: 720px;
-      margin: 8vh auto;
-      background: #ffffff;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+    .shell {
+      width: min(920px, 100%);
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(4px);
     }
-    h1 {
-      margin-top: 0;
-      font-size: 1.4rem;
+
+    .top {
+      padding: 20px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: linear-gradient(90deg, rgba(246, 196, 83, 0.15), rgba(246, 196, 83, 0));
     }
-    p {
-      line-height: 1.5;
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0;
     }
-    .tips {
-      margin-top: 16px;
-      padding: 12px;
-      border-left: 4px solid #2563eb;
-      background: #eff6ff;
-      border-radius: 6px;
+
+    .title {
+      margin: 0;
+      font-size: 1.05rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
     }
+
+    .subtitle {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(61, 220, 151, 0.12);
+      border: 1px solid rgba(61, 220, 151, 0.35);
+      color: #c0ffe0;
+      font-size: 0.86rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 7px rgba(61, 220, 151, 0.15);
+    }
+
+    .content {
+      padding: 24px 22px 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .headline {
+      margin: 0;
+      font-size: clamp(1.2rem, 3.2vw, 1.8rem);
+      line-height: 1.25;
+    }
+
+    .muted {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      margin-top: 4px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .card-label {
+      margin: 0 0 8px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #9fadd0;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 36px;
+    }
+
     a {
-      color: #1d4ed8;
+      color: #86b9ff;
       text-decoration: none;
+      font-weight: 600;
+      overflow-wrap: anywhere;
     }
+
     a:hover {
+      color: #b6d3ff;
       text-decoration: underline;
+    }
+
+    .tips {
+      margin-top: 2px;
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--warn-bg);
+      border: 1px solid rgba(243, 190, 79, 0.35);
+      border-left: 4px solid var(--warn-line);
+    }
+
+    .tips-title {
+      margin: 0 0 6px;
+      font-size: 0.84rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #ffde9d;
+      font-weight: 800;
+    }
+
+    .tips p {
+      margin: 0;
+      line-height: 1.55;
+      color: #f7eddb;
+    }
+
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+      padding: 1px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .footer {
+      padding: 0 22px 20px;
+      color: #96a3c6;
+      font-size: 0.82rem;
     }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <h1>Si vous voyez ceci, le service est en ligne.</h1>
-    <p>
-      Lien GitHub :
-      <a href="https://github.com/Masutayunikon/PYGeGe" target="_blank" rel="noopener noreferrer">
-        https://github.com/Masutayunikon/PYGeGe
-      </a>
-    </p>
-    <div class="tips">
-      <strong>Tips :</strong>
-      Si Prowlarr n'arrive pas a s'y connecter, verifiez que vous avez mis
-      <code>http</code> et pas <code>https</code> (pas mettre le <code>s</code>).
-    </div>
+  <main class="shell">
+    <header class="top">
+      <div class="brand">
+        <div>
+          <h1 class="title">PyGeGe</h1>
+          <p class="subtitle">Passerelle YGG / Torznab</p>
+        </div>
+      </div>
+      <div class="status">
+        <span class="dot"></span>
+        Service en ligne
+      </div>
+    </header>
+
+    <section class="content">
+      <h2 class="headline">Si vous voyez cette page, le service est disponible.</h2>
+      <p class="muted">félicitations!.</p>
+
+      <div class="grid">
+        <article class="card">
+          <p class="card-label">Projet GitHub</p>
+          <div class="row">
+            <a href="https://github.com/Masutayunikon/PYGeGe" target="_blank" rel="noopener noreferrer">
+              github.com/Masutayunikon/PYGeGe
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <p class="card-label">Source YGG</p>
+          <div class="row">
+            <a href="https://ygg.gratis/" target="_blank" rel="noopener noreferrer">
+              ygg.gratis
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <aside class="tips">
+        <p class="tips-title">Tips connexion</p>
+        <p>
+          Si Prowlarr n'arrive pas a s'y connecter, verifiez que vous avez mis
+          <code>http</code> et pas <code>https</code> (pas mettre le <code>s</code>).
+        </p>
+      </aside>
+    </section>
+
+    <p class="footer">PyGeGe status page</p>
   </main>
 </body>
 </html>

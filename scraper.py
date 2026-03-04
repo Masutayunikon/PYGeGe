@@ -71,12 +71,17 @@ DEFAULT_TRACKERS = [
     "http://tr.nyacat.pw:80/announce",
 ]
 
+def fix_encoding(text: str) -> str:
+    try:
+        return text.encode('latin-1').decode('utf-8')
+    except (UnicodeDecodeError, UnicodeEncodeError):
+        return text
+
 def _parse_event(event: dict) -> dict | None:
-    """Parse un événement Nostr YGG en dict torrent."""
     try:
         tags = event.get("tags", [])
-
         title = _get_tag(tags, "title")
+        title = fix_encoding(title)
         hash_x = _get_tag(tags, "x")
         size = int(_get_tag(tags, "size") or 0)
         category = _get_tag_prefix(tags, "u2p.cat:")

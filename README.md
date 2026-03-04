@@ -32,7 +32,7 @@ services:
     image: masutayunikon/pygege:latest
     container_name: pygege
     volumes:
-      - ./data:/app/data
+      - /data:/app/data
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -45,7 +45,7 @@ docker compose up -d
 Au premier lancement, une clé API est générée dans `./data/api_key.txt` :
 
 ```bash
-cat ./data/api_key.txt
+cat /data/api_key.txt
 ```
 
 ## Configuration Prowlarr

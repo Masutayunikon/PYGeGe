@@ -1,9 +1,10 @@
 services:
   pygege:
     build: .
-    container_name: masutayunikon/pygege:latest
-    volumes:
-      - /data:/app/data
+    container_name: pygege-dev
     ports:
       - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - .:/app
     restart: unless-stopped

@@ -140,7 +140,9 @@ def build_torznab_xml(torrents: list[dict]) -> str:
         ygg_cat = str(t['category'] or "2183")
         torznab_cat = YGG_TO_TORZNAB.get(ygg_cat, "8000")
         magnet = t['download_url'].replace('&', '&amp;')
-        name = t['name'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        name = t['name']
+        name = name.encode('utf-8', errors='replace').decode('utf-8')
+        name = name.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
 
         # Convert Unix timestamp -> RSS pubDate (RFC822 / GMT)
         ts = int(t.get("timestamp") or 0)
@@ -208,7 +210,10 @@ async def torznab(
         results = await search(query=q, categories=ygg_pcats if ygg_pcats else None, limit=limit + offset)
         page = results[offset:offset + limit]
         logger.info(f"🎯 {len(page)} résultats retournés (offset={offset})")
-        return Response(content=build_torznab_xml(page), media_type="application/xml")
+        return Response(
+            content=build_torznab_xml(results).encode("utf-8"),
+            media_type="application/xml; charset=utf-8"
+        )
 
     raise HTTPException(status_code=400, detail=f"Type inconnu : {t}")
 

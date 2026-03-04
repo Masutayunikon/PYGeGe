@@ -107,15 +107,38 @@ def verify_api_key(apikey: str = Query(...)):
     return apikey
 
 
+# Mapping parent -> enfants
+CAT_CHILDREN = {
+    "2145": ["2178", "2179", "2180", "2181", "2182", "2183", "2184", "2185", "2186", "2187"],
+    "2139": ["2147", "2148", "2150", "2149"],
+    "2144": ["2177", "2176", "2171", "2172", "2174", "2175", "2173"],
+    "2142": ["2167", "2159", "2160", "2162", "2163", "2165", "2164", "2166", "2161"],
+    "2140": ["2151", "2152", "2153", "2154", "2155", "2156"],
+    "2300": ["2301", "2302", "2303", "2304"],
+    "2200": ["2201", "2202"],
+    "2141": ["2157", "2158"],
+    "2143": ["2168", "2169", "2170"],
+    "2188": ["2401", "2189", "2190", "2191", "2402"],
+}
+
 def build_torznab_xml(torrents: list[dict], query: str = "", requested_cats: list[str] = None) -> str:
+    # Expand les catégories parentes vers leurs enfants
+    expanded_cats = set()
+    if requested_cats:
+        for cat in requested_cats:
+            expanded_cats.add(cat)
+            if cat in CAT_CHILDREN:
+                expanded_cats.update(CAT_CHILDREN[cat])
+
     items = ""
     for t in torrents:
         ygg_cat = str(t['category'] or "2183")
-        torznab_cat = CATEGORIES.get(ygg_cat, {}).get("id", 8000)
+        torznab_cat = CATEGORIES.get(ygg_cat, {}).get("id", ygg_cat)
 
-        # Filtre par catégorie si demandé
-        if requested_cats and str(torznab_cat) not in requested_cats:
+        if expanded_cats and str(ygg_cat) not in expanded_cats:
             continue
+        ...
+        ...
 
         magnet = t['download_url'].replace('&', '&amp;')
         name = t['name'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')

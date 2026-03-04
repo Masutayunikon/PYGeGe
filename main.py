@@ -155,7 +155,8 @@ def build_torznab_xml(torrents: list[dict]) -> str:
             <category>{torznab_cat}</category>
             <torznab:attr name="category" value="{torznab_cat}"/>
             <torznab:attr name="seeders" value="{t['seeders']}"/>
-            <torznab:attr name="peers" value="{t['leechers']}"/>
+            <torznab:attr name="leechers" value="{t['leechers']}"/>
+            <torznab:attr name="grabs" value="{t['completed']}"/>
             <torznab:attr name="size" value="{t['size']}"/>
             <torznab:attr name="downloadvolumefactor" value="0"/>
             <torznab:attr name="uploadvolumefactor" value="1"/>
@@ -185,7 +186,6 @@ async def torznab(
     offset: int = Query(0),
     apikey: str = Depends(verify_api_key)
 ):
-    logger.info(f"📥 URL: {request.url}")
 
     if t == "caps":
         return Response(content=build_caps_xml(), media_type="application/xml")

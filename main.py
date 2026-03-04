@@ -9,7 +9,7 @@ from scraper import search
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-API_KEY_FILE = "api_key.txt"
+API_KEY_FILE = "/app/data/api_key.txt"
 
 CATEGORIES = {
     "2145": {"id": 2145, "name": "Film/Vidéo"},
@@ -27,6 +27,7 @@ CATEGORIES = {
 
 
 def load_or_create_api_key() -> str:
+    os.makedirs(os.path.dirname(API_KEY_FILE), exist_ok=True)
     if os.path.exists(API_KEY_FILE):
         with open(API_KEY_FILE, "r") as f:
             return f.read().strip()

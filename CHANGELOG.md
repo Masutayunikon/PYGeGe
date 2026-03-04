@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.3...v1.2.4) (2026-03-04)
+
+
+### Bug Fixes
+
+* cat ([82aefda](https://github.com/Masutayunikon/PYGeGe/commit/82aefdadc33fb544a209a6d27dab220c43b354dc))
+
 ## [1.2.3](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.2...v1.2.3) (2026-03-04)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/Masutayunikon/PYGeGe/compare/v1.0.3...v1.0.4) (2026-03-04)
+
+
+### Bug Fixes
+
+* change mapping ([6ccbd35](https://github.com/Masutayunikon/PYGeGe/commit/6ccbd354712dae1939933b8b8006764c8d7f2ddd))
+
 ## [1.0.3](https://github.com/Masutayunikon/PYGeGe/compare/v1.0.2...v1.0.3) (2026-03-04)
 
 

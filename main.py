@@ -123,21 +123,130 @@ YGG_PARENT = {
     "2155": "2140", "2156": "2140",
 }
 
-def build_caps_xml() -> str:
-    cats = ""
-    for parent_id, children in CAT_TREE.items():
-        parent_name = ALL_CATS[parent_id]
-        subcats = ""
-        for child_id in children:
-            child_name = ALL_CATS[child_id]
-            subcats += f'<subcat id="{child_id}" name="{child_name}"/>\n'
-        cats += f'<category id="{parent_id}" name="{parent_name}">\n{subcats}</category>\n'
+YGG_TO_TORZNAB = {
+    "2183": "2000", "2178": "2000", "2180": "2000",
+    "2145": "5000", "2184": "5000", "2182": "5000", "2185": "5000",
+    "2179": "5070", "2181": "5080", "2186": "5060", "2187": "5000",
+    "2139": "3000", "2148": "3000", "2147": "3000", "2150": "3000", "2149": "3000",
+    "2151": "3010",
+    "2144": "4000", "2176": "4000", "2177": "4050", "2173": "4050",
+    "2171": "4070", "2172": "4030", "2174": "4040", "2175": "4040",
+    "2142": "1000", "2159": "1000", "2160": "1000", "2161": "1000",
+    "2162": "1040", "2163": "1030", "2164": "1080",
+    "2165": "4040", "2166": "4040", "2167": "1000",
+    "2140": "7000", "2154": "7020", "2152": "7000", "2153": "7030",
+    "2155": "7030", "2156": "7010",
+    "2300": "8000", "2301": "8000", "2302": "8000", "2303": "8000", "2304": "8000",
+    "2141": "8000", "2157": "8000", "2158": "8000",
+    "2143": "8000", "2168": "8000", "2169": "8000", "2170": "8000",
+    "2200": "8000", "2201": "8000", "2202": "8000",
+    "2188": "6000", "2189": "6000", "2190": "6000", "2191": "6010",
+    "2401": "6000", "2402": "6000",
+}
 
-    return f"""<?xml version="1.0" encoding="UTF-8"?>
+def build_caps_xml() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
 <caps>
-    ...
+    <server title="PyGégé"/>
+    <searching>
+        <search available="yes" supportedParams="q,cat"/>
+        <tv-search available="yes" supportedParams="q,season,ep,cat"/>
+        <movie-search available="yes" supportedParams="q,cat"/>
+        <music-search available="yes" supportedParams="q,cat"/>
+        <book-search available="yes" supportedParams="q,cat"/>
+    </searching>
     <categories>
-        {cats}
+        <category id="2000" name="Movies">
+            <subcat id="2183" name="Film/Vidéo : Film"/>
+            <subcat id="2178" name="Film/Vidéo : Animation"/>
+            <subcat id="2180" name="Film/Vidéo : Concert"/>
+        </category>
+        <category id="5000" name="TV">
+            <subcat id="2145" name="Film/Vidéo"/>
+            <subcat id="2184" name="Film/Vidéo : Série TV"/>
+            <subcat id="2182" name="Film/Vidéo : Emission TV"/>
+            <subcat id="2185" name="Film/Vidéo : Spectacle"/>
+            <subcat id="2179" name="Film/Vidéo : Animation Série"/>
+        </category>
+        <category id="5060" name="TV/Sport">
+            <subcat id="2186" name="Film/Vidéo : Sport"/>
+        </category>
+        <category id="5080" name="TV/Documentary">
+            <subcat id="2181" name="Film/Vidéo : Documentaire"/>
+        </category>
+        <category id="5070" name="TV/Anime">
+            <subcat id="2179" name="Film/Vidéo : Animation Série"/>
+        </category>
+        <category id="3000" name="Audio">
+            <subcat id="2139" name="Audio"/>
+            <subcat id="2148" name="Audio : Musique"/>
+            <subcat id="2147" name="Audio : Karaoké"/>
+            <subcat id="2150" name="Audio : Podcast Radio"/>
+            <subcat id="2149" name="Audio : Samples"/>
+        </category>
+        <category id="3010" name="Audio/Audiobook">
+            <subcat id="2151" name="eBook : Audio"/>
+        </category>
+        <category id="4000" name="PC">
+            <subcat id="2144" name="Application"/>
+            <subcat id="2176" name="Application : Formation"/>
+        </category>
+        <category id="4050" name="PC/0day">
+            <subcat id="2173" name="Application : Windows"/>
+            <subcat id="2177" name="Application : Autre"/>
+        </category>
+        <category id="4070" name="PC/ISO">
+            <subcat id="2171" name="Application : Linux"/>
+        </category>
+        <category id="4030" name="PC/Mac">
+            <subcat id="2172" name="Application : MacOS"/>
+        </category>
+        <category id="4040" name="PC/Mobile-Android">
+            <subcat id="2174" name="Application : Smartphone"/>
+            <subcat id="2175" name="Application : Tablette"/>
+        </category>
+        <category id="1000" name="PC/Games">
+            <subcat id="2142" name="Jeu vidéo"/>
+            <subcat id="2159" name="Jeu vidéo : Linux"/>
+            <subcat id="2160" name="Jeu vidéo : MacOS"/>
+            <subcat id="2161" name="Jeu vidéo : Windows"/>
+        </category>
+        <category id="1040" name="Console/XBox One">
+            <subcat id="2162" name="Jeu vidéo : Microsoft"/>
+        </category>
+        <category id="1030" name="Console/Wii">
+            <subcat id="2163" name="Jeu vidéo : Nintendo"/>
+        </category>
+        <category id="1080" name="Console/PS4">
+            <subcat id="2164" name="Jeu vidéo : Sony"/>
+        </category>
+        <category id="7000" name="Books">
+            <subcat id="2140" name="eBook"/>
+            <subcat id="2154" name="eBook : Livres"/>
+            <subcat id="2152" name="eBook : Bds"/>
+        </category>
+        <category id="7020" name="Books/EBook">
+            <subcat id="2154" name="eBook : Livres"/>
+        </category>
+        <category id="7030" name="Books/Comics">
+            <subcat id="2153" name="eBook : Comics"/>
+            <subcat id="2155" name="eBook : Mangas"/>
+        </category>
+        <category id="7010" name="Books/Mags">
+            <subcat id="2156" name="eBook : Presse"/>
+        </category>
+        <category id="8000" name="Other">
+            <subcat id="2300" name="Nulled"/>
+            <subcat id="2141" name="Emulation"/>
+            <subcat id="2143" name="GPS"/>
+            <subcat id="2200" name="Imprimante 3D"/>
+        </category>
+        <category id="6000" name="XXX">
+            <subcat id="2188" name="XXX"/>
+            <subcat id="2189" name="XXX : Films"/>
+            <subcat id="2190" name="XXX : Hentai"/>
+            <subcat id="2191" name="XXX : Images"/>
+        </category>
     </categories>
 </caps>"""
 
@@ -146,14 +255,11 @@ def build_torznab_xml(torrents: list[dict]) -> str:
     items = ""
     for t in torrents:
         ygg_cat = str(t['category'] or "2183")
-        parent_cat = YGG_PARENT.get(ygg_cat)
+        torznab_cat = YGG_TO_TORZNAB.get(ygg_cat, "8000")
 
         magnet = t['download_url'].replace('&', '&amp;')
         name = t['name'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
-        cat_attrs = f'<torznab:attr name="category" value="{ygg_cat}"/>'
-        if parent_cat:
-            cat_attrs += f'\n            <torznab:attr name="category" value="{parent_cat}"/>'
 
         items += f"""<item>
             <title>{name}</title>
@@ -163,7 +269,7 @@ def build_torznab_xml(torrents: list[dict]) -> str:
             <torznab:attr name="seeders" value="{t['seeders']}"/>
             <torznab:attr name="leechers" value="{t['leechers']}"/>
             <torznab:attr name="size" value="{t['size']}"/>
-            {cat_attrs}
+            <torznab:attr name="category" value="{torznab_cat}"/>
         </item>"""
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>

@@ -83,7 +83,7 @@ def verify_api_key(apikey: str = Query(...)):
     return apikey
 
 
-async def get_french_title(imdbid: str = None, tmdbid: str = None) -> str | None:
+async def get_french_title_by_id(imdbid: str = None, tmdbid: str = None) -> str | None:
     if not TMDB_API_KEY:
         return None
     try:
@@ -107,7 +107,30 @@ async def get_french_title(imdbid: str = None, tmdbid: str = None) -> str | None
                 data = r.json()
                 return data.get("title") or data.get("name")
     except Exception as e:
-        logger.warning(f"⚠️ TMDB error: {e}")
+        logger.warning(f"⚠️ TMDB id error: {e}")
+    return None
+
+
+async def get_french_title_by_query(query: str) -> str | None:
+    if not TMDB_API_KEY:
+        return None
+    # Retire l'année si présente ex: "Howls Moving Castle 2004" -> "Howls Moving Castle"
+    clean_query = re.sub(r'\s+\d{4}$', '', query.strip())
+    try:
+        async with httpx.AsyncClient() as client:
+            r = await client.get(
+                "https://api.themoviedb.org/3/search/multi",
+                params={"api_key": TMDB_API_KEY, "query": clean_query, "language": "fr-FR"}
+            )
+            data = r.json()
+            results = data.get("results", [])
+            if not results:
+                return None
+            title = results[0].get("title") or results[0].get("name")
+            if title and title.lower() != clean_query.lower():
+                return title
+    except Exception as e:
+        logger.warning(f"⚠️ TMDB query error: {e}")
     return None
 
 
@@ -241,11 +264,14 @@ async def torznab(
 
         cats = ygg_pcats if ygg_pcats else None
 
-        # Cherche le titre français si imdbid/tmdbid dispo et TMDB configuré
+        # Cherche le titre français
         french_title = None
-        if (imdbid or tmdbid) and TMDB_API_KEY:
-            french_title = await get_french_title(imdbid=imdbid, tmdbid=tmdbid)
-            if french_title and french_title.lower() == q.lower():
+        if TMDB_API_KEY:
+            if imdbid or tmdbid:
+                french_title = await get_french_title_by_id(imdbid=imdbid, tmdbid=tmdbid)
+            if not french_title and q:
+                french_title = await get_french_title_by_query(q)
+            if french_title and french_title.lower() == re.sub(r'\s+\d{4}$', '', q.strip()).lower():
                 french_title = None  # Déjà en français
 
         if french_title:

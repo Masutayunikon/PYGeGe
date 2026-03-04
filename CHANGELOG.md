@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.13](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.12...v1.2.13) (2026-03-04)
+
+
+### Bug Fixes
+
+* fix docker version ([9ce2250](https://github.com/Masutayunikon/PYGeGe/commit/9ce2250bbe6d96e0adab6bb140fc30e5539f1532))
+* fix leechers ([a61eae5](https://github.com/Masutayunikon/PYGeGe/commit/a61eae5ee1702ca7e5954b27c68cef0ac465275d))
+* fix log ([090e2a0](https://github.com/Masutayunikon/PYGeGe/commit/090e2a0d03966dc12ba5ee674b2fffd79e62d71a))
+
 ## [1.2.12](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.11...v1.2.12) (2026-03-04)
 
 

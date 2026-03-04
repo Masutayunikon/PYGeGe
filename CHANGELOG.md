@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.16...v1.3.0) (2026-03-04)
+
+
+### Features
+
+* add imdb ([52d5e40](https://github.com/Masutayunikon/PYGeGe/commit/52d5e40bd7983aefa52e27d1afebf173f1da5b64))
+* now seach the imbtv title to fetch the french title before looking for others language ([d0b3cf3](https://github.com/Masutayunikon/PYGeGe/commit/d0b3cf3629b249a4ec16e69a5a4c7350829e37b3))
+
+
+### Bug Fixes
+
+* add idbid on /search ([6762efd](https://github.com/Masutayunikon/PYGeGe/commit/6762efd553386a12b0ad62ba3d41588c9abd3efa))
+* containerize.yml branches name for dev ([905518f](https://github.com/Masutayunikon/PYGeGe/commit/905518f4dbc1fabf7397750a9ba6cebab7cfbdb6))
+* encodage UTF-8 des titres, workflow multi-arch amd64/arm64, docker-compose séparés user/dev ([450804c](https://github.com/Masutayunikon/PYGeGe/commit/450804c333fa77ee5b2fbb055e480d72fdaafc57))
+* try imbtv ([99292a3](https://github.com/Masutayunikon/PYGeGe/commit/99292a3c408d1c203e6a9f4a67e64aecac6f302a))
+
 ## [1.2.16](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.15...v1.2.16) (2026-03-04)
 
 

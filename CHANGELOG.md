@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/Masutayunikon/PYGeGe/compare/v1.0.1...v1.0.2) (2026-03-04)
+
+
+### Bug Fixes
+
+* save file on dockercompose for the api key ([bb655e9](https://github.com/Masutayunikon/PYGeGe/commit/bb655e9f6da6a7ce1a7d10d00227efbdb5bf9210))
+
 ## [1.0.1](https://github.com/Masutayunikon/PYGeGe/compare/v1.0.0...v1.0.1) (2026-03-04)
 
 

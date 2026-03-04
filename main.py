@@ -205,9 +205,10 @@ async def torznab(
                     ygg_pcats.append(pcat)
                     seen.add(pcat)
 
-        results = await search(query=q, categories=ygg_pcats if ygg_pcats else None, limit=limit)
-        logger.info(f"🎯 {len(results)} résultats retournés")
-        return Response(content=build_torznab_xml(results), media_type="application/xml")
+        results = await search(query=q, categories=ygg_pcats if ygg_pcats else None, limit=limit + offset)
+        page = results[offset:offset + limit]
+        logger.info(f"🎯 {len(page)} résultats retournés (offset={offset})")
+        return Response(content=build_torznab_xml(page), media_type="application/xml")
 
     raise HTTPException(status_code=400, detail=f"Type inconnu : {t}")
 

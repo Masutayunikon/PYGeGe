@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.1...v1.2.2) (2026-03-04)
+
+
+### Bug Fixes
+
+* fix build caps ([df02c9a](https://github.com/Masutayunikon/PYGeGe/commit/df02c9adfd41193fb994c4c211ce8f1477bdfb8d))
+
 ## [1.2.1](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.0...v1.2.1) (2026-03-04)
 
 

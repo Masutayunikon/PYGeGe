@@ -5,6 +5,7 @@ import os
 from fastapi import FastAPI, Query, HTTPException, Depends, Request
 from fastapi.responses import Response
 from scraper import search
+from email.utils import formatdate
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -140,12 +141,16 @@ def build_torznab_xml(torrents: list[dict]) -> str:
         magnet = t['download_url'].replace('&', '&amp;')
         name = t['name'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
+        # Convert Unix timestamp -> RSS pubDate (RFC822 / GMT)
+        ts = int(t.get("timestamp") or 0)
+        pubdate = formatdate(ts, usegmt=True)  # e.g. "Wed, 04 Mar 2026 01:52:53 GMT"
+
         items += f"""<item>
             <title>{name}</title>
             <guid>{t['id']}</guid>
             <link>{magnet}</link>
             <comments>{magnet}</comments>
-            <pubDate>{t['timestamp']}</pubDate>
+            <pubDate>{t[pubdate]}</pubDate>
             <size>{t['size']}</size>
             <enclosure url="{magnet}" length="{t['size']}" type="application/x-bittorrent"/>
             <category>{torznab_cat}</category>

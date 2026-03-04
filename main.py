@@ -107,6 +107,7 @@ async def torznab(
     cat: str = Query(None),
     apikey: str = Depends(verify_api_key)
 ):
+    logger.info(f"📥 Requête : t={t} q={q} cat={cat}")
     if t == "caps":
         return Response(content=build_caps_xml(), media_type="application/xml")
 

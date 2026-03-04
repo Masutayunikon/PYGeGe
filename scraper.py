@@ -81,11 +81,13 @@ def _parse_event(event: dict) -> dict | None:
         size = int(_get_tag(tags, "size") or 0)
         category = _get_tag_prefix(tags, "u2p.cat:")
 
-        # seeders depuis tag "l":"u2p.seed:5"
-        seeders = int(_get_tag_prefix(tags, "u2p.seed:") or 0)
+        # Si le tag u2p.seed est absent, on met 1 pour ne pas que Prowlarr rejette le torrent
+        seeders = int(_get_tag_prefix(tags, "u2p.seed:") or 1)
         leechers = int(_get_tag_prefix(tags, "u2p.leech:") or 0)
         completed = int(_get_tag_prefix(tags, "u2p.completed:") or 0)
 
+        # published_at = date réelle de sortie sur YGG, prioritaire sur created_at
+        timestamp = int(_get_tag(tags, "published_at") or event.get("created_at", 0))
 
         if not title or not hash_x:
             return None
@@ -96,13 +98,13 @@ def _parse_event(event: dict) -> dict | None:
             magnet += f"&tr={quote(tr, safe='')}"
 
         return {
-            "id": event.get("id"),
+            "id": hash_x,
             "name": title,
             "size": size,
             "seeders": seeders,
             "leechers": leechers,
             "completed": completed,
-            "timestamp": event.get("created_at", 0),
+            "timestamp": timestamp,
             "category": category,
             "download_url": magnet
         }
@@ -145,6 +147,7 @@ async def _search_async(query: str, category: str = None, limit: int = 50) -> li
     except Exception as e:
         logger.error(f"❌ Erreur WebSocket : {e}")
 
+    results.sort(key=lambda x: x["timestamp"], reverse=True)
     return results
 
 
@@ -186,4 +189,5 @@ async def search(query: str, categories: list[str] = None, limit: int = 50) -> l
     except Exception as e:
         logger.error(f"❌ Erreur WebSocket : {e}")
 
+    results.sort(key=lambda x: x["timestamp"], reverse=True)
     return results

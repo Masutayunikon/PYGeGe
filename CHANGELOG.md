@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/Masutayunikon/PYGeGe/compare/v1.0.2...v1.0.3) (2026-03-04)
+
+
+### Bug Fixes
+
+* 🐛 escape XML special characters in torznab response ([2133594](https://github.com/Masutayunikon/PYGeGe/commit/213359475352d37133c685fa25566409cb53f112))
+
 ## [1.0.2](https://github.com/Masutayunikon/PYGeGe/compare/v1.0.1...v1.0.2) (2026-03-04)
 
 

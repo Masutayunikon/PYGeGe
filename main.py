@@ -185,7 +185,8 @@ async def torznab(
     offset: int = Query(0),
     apikey: str = Depends(verify_api_key)
 ):
-    logger.info(f"📥 URL: {request.url}")
+    # remove api_key from logs of request.url
+    logger.info(f"📥 URL: {request.url.replace(f'apikey={apikey}', 'apikey=***')}")
 
     if t == "caps":
         return Response(content=build_caps_xml(), media_type="application/xml")

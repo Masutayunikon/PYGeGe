@@ -189,4 +189,5 @@ async def search(query: str, categories: list[str] = None, limit: int = 50) -> l
     except Exception as e:
         logger.error(f"❌ Erreur WebSocket : {e}")
 
+    results.sort(key=lambda x: x["timestamp"], reverse=True)
     return results

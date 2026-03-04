@@ -1,5 +1,6 @@
 # main.py
 import logging
+import re
 import secrets
 import os
 from fastapi import FastAPI, Query, HTTPException, Depends, Request
@@ -155,7 +156,7 @@ def build_torznab_xml(torrents: list[dict]) -> str:
             <category>{torznab_cat}</category>
             <torznab:attr name="category" value="{torznab_cat}"/>
             <torznab:attr name="seeders" value="{t['seeders']}"/>
-            <torznab:attr name="peers" value="{t['leechers']}"/>
+            <torznab:attr name="leechers" value="{t['leechers']}"/>
             <torznab:attr name="size" value="{t['size']}"/>
             <torznab:attr name="downloadvolumefactor" value="0"/>
             <torznab:attr name="uploadvolumefactor" value="1"/>
@@ -185,7 +186,10 @@ async def torznab(
     offset: int = Query(0),
     apikey: str = Depends(verify_api_key)
 ):
-    logger.info(f"📥 URL: {request.url}")
+    url = str(request.url)
+    url = re.sub(r"apikey=[^&]+", "apikey=***", url)
+
+    logger.info(f"📥 URL: {url}")
 
     if t == "caps":
         return Response(content=build_caps_xml(), media_type="application/xml")

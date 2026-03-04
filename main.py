@@ -157,7 +157,8 @@ def build_caps_xml() -> str:
         key = f"{cat['id']}-{cat['name']}"
         if key not in seen:
             seen.add(key)
-            cats += f'<category id="{cat["id"]}" name="{cat["name"]}"/>\n'
+            name = cat['name'].replace('&', '&amp;')
+            cats += f'<category id="{cat["id"]}" name="{name}"/>\n'
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <caps>

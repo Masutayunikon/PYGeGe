@@ -5,6 +5,7 @@ import re
 import secrets
 import os
 import httpx
+from pathlib import Path
 from fastapi import FastAPI, Query, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse, Response
 from scraper import search
@@ -17,6 +18,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 API_KEY_FILE = "/app/data/api_key.txt"
+HOME_HTML_FILE = Path(__file__).with_name("home.html")
 
 YGG_TO_TORZNAB = {
     "2183": "2040", "2178": "2040", "2180": "2040",
@@ -236,71 +238,7 @@ app = FastAPI(title="PyGégé - YGG Torznab API")
 
 @app.get("/", response_class=HTMLResponse)
 async def home():
-    return """<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PyGeGe - Service en ligne</title>
-  <style>
-    :root {
-      color-scheme: light;
-      font-family: Arial, sans-serif;
-    }
-    body {
-      margin: 0;
-      background: #f4f6f8;
-      color: #1f2937;
-    }
-    .wrap {
-      max-width: 720px;
-      margin: 8vh auto;
-      background: #ffffff;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    }
-    h1 {
-      margin-top: 0;
-      font-size: 1.4rem;
-    }
-    p {
-      line-height: 1.5;
-    }
-    .tips {
-      margin-top: 16px;
-      padding: 12px;
-      border-left: 4px solid #2563eb;
-      background: #eff6ff;
-      border-radius: 6px;
-    }
-    a {
-      color: #1d4ed8;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-  <main class="wrap">
-    <h1>Si vous voyez ceci, Pygege est en ligne ! .</h1>
-    <p>
-      Lien documentation :
-      <a href="https://github.com/Masutayunikon/PYGeGe" target="_blank" rel="noopener noreferrer">
-        https://github.com/Masutayunikon/PYGeGe
-      </a>
-    </p>
-    <div class="tips">
-      <strong>Tips :</strong>
-      Si Prowlarr n'arrive pas a s'y connecter, verifiez que vous avez mis
-      <code>http</code> et pas <code>https</code> (pas mettre le <code>s</code>).
-    </div>
-  </main>
-</body>
-</html>"""
+    return HOME_HTML_FILE.read_text(encoding="utf-8")
 
 
 @app.get("/api")

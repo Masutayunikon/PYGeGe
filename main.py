@@ -12,18 +12,21 @@ logger = logging.getLogger(__name__)
 API_KEY_FILE = "/app/data/api_key.txt"
 
 CATEGORIES = {
-    "2145": {"id": 2145, "name": "Film/Vidéo"},
-    "2178": {"id": 2178, "name": "Film/Vidéo : Animation"},
-    "2179": {"id": 2179, "name": "Film/Vidéo : Animation Série"},
-    "2180": {"id": 2180, "name": "Film/Vidéo : Concert"},
-    "2181": {"id": 2181, "name": "Film/Vidéo : Documentaire"},
-    "2182": {"id": 2182, "name": "Film/Vidéo : Emission TV"},
-    "2183": {"id": 2183, "name": "Film/Vidéo : Film"},
-    "2184": {"id": 2184, "name": "Film/Vidéo : Série TV"},
-    "2185": {"id": 2185, "name": "Film/Vidéo : Spectacle"},
-    "2186": {"id": 2186, "name": "Film/Vidéo : Sport"},
-    "2187": {"id": 2187, "name": "Film/Vidéo : Vidéo-clips"},
+    "2145": {"id": 2000, "name": "Film/Vidéo"},
+    "2178": {"id": 5070, "name": "Film/Vidéo : Animation"},
+    "2179": {"id": 5070, "name": "Film/Vidéo : Animation Série"},
+    "2180": {"id": 2000, "name": "Film/Vidéo : Concert"},
+    "2181": {"id": 5080, "name": "Film/Vidéo : Documentaire"},
+    "2182": {"id": 5000, "name": "Film/Vidéo : Emission TV"},
+    "2183": {"id": 2000, "name": "Film/Vidéo : Film"},
+    "2184": {"id": 5000, "name": "Film/Vidéo : Série TV"},
+    "2185": {"id": 5000, "name": "Film/Vidéo : Spectacle"},
+    "2186": {"id": 5060, "name": "Film/Vidéo : Sport"},
+    "2187": {"id": 5000, "name": "Film/Vidéo : Vidéo-clips"},
 }
+
+# Mapping catégories YGG -> Torznab
+YGG_TO_TORZNAB = {k: v["id"] for k, v in CATEGORIES.items()}
 
 
 def load_or_create_api_key() -> str:
@@ -53,6 +56,8 @@ def build_torznab_xml(torrents: list[dict], query: str = "") -> str:
     for t in torrents:
         magnet = t['download_url'].replace('&', '&amp;')
         name = t['name'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        ygg_cat = t['category'] or "2145"
+        torznab_cat = YGG_TO_TORZNAB.get(str(ygg_cat), 2000)
         items += f"""
         <item>
             <title>{name}</title>
@@ -62,7 +67,7 @@ def build_torznab_xml(torrents: list[dict], query: str = "") -> str:
             <torznab:attr name="seeders" value="{t['seeders']}"/>
             <torznab:attr name="leechers" value="{t['leechers']}"/>
             <torznab:attr name="size" value="{t['size']}"/>
-            <torznab:attr name="category" value="{t['category'] or 2145}"/>
+            <torznab:attr name="category" value="{torznab_cat}"/>
         </item>"""
 
     return f"""<?xml version="1.0" encoding="UTF-8"?>

@@ -51,11 +51,13 @@ def verify_api_key(apikey: str = Query(...)):
 def build_torznab_xml(torrents: list[dict], query: str = "") -> str:
     items = ""
     for t in torrents:
+        magnet = t['download_url'].replace('&', '&amp;')
+        name = t['name'].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
         items += f"""
         <item>
-            <title>{t['name']}</title>
+            <title>{name}</title>
             <guid>{t['id']}</guid>
-            <link>{t['download_url']}</link>
+            <link>{magnet}</link>
             <pubDate>{t['timestamp']}</pubDate>
             <torznab:attr name="seeders" value="{t['seeders']}"/>
             <torznab:attr name="leechers" value="{t['leechers']}"/>

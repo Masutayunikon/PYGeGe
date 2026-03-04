@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.11](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.10...v1.2.11) (2026-03-04)
+
+
+### Bug Fixes
+
+* magnet link ([33b8c31](https://github.com/Masutayunikon/PYGeGe/commit/33b8c313c06757b0df5001ecc294d270d2ffcf73))
+
 ## [1.2.10](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.9...v1.2.10) (2026-03-04)
 
 

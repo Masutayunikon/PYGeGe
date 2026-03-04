@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.16](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.15...v1.2.16) (2026-03-04)
+
+
+### Bug Fixes
+
+* implement offset pagination for Prowlarr paging support ([b0593de](https://github.com/Masutayunikon/PYGeGe/commit/b0593debd88041191faccc90272ae8743c9de7b0))
+* improve event parsing for Prowlarr compatibility ([be823b9](https://github.com/Masutayunikon/PYGeGe/commit/be823b9f0634d1c0071b9381aa7e84c36c386d9f))
+* improve search quality and add README ([0846b38](https://github.com/Masutayunikon/PYGeGe/commit/0846b3804e905c5ea1148753f489dc55e62c965e))
+* sort search results by timestamp descending ([d592f0b](https://github.com/Masutayunikon/PYGeGe/commit/d592f0b827377a56c59be4f68c4fcd2523e90ac1))
+
 ## [1.2.15](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.14...v1.2.15) (2026-03-04)
 
 

@@ -1,5 +1,6 @@
 # main.py
 import asyncio
+import datetime as dt
 import logging
 import re
 import secrets
@@ -19,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 API_KEY_FILE = "/app/data/api_key.txt"
 HOME_HTML_FILE = Path(__file__).with_name("home.html")
+YGG_STATUS_URL = "https://ygg.gratis/"
 
 YGG_TO_TORZNAB = {
     "2183": "2040", "2178": "2040", "2180": "2040",
@@ -239,6 +241,38 @@ app = FastAPI(title="PyGégé - YGG Torznab API")
 @app.get("/", response_class=HTMLResponse)
 async def home():
     return HOME_HTML_FILE.read_text(encoding="utf-8")
+
+
+async def is_ygg_online() -> tuple[bool, int | None]:
+    timeout = httpx.Timeout(6.0, connect=4.0)
+    headers = {"User-Agent": "PyGeGe-Status/1.0"}
+
+    async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, headers=headers) as client:
+        try:
+            head_res = await client.head(YGG_STATUS_URL)
+            if head_res.status_code < 500:
+                return True, head_res.status_code
+        except httpx.HTTPError:
+            pass
+
+        try:
+            get_res = await client.get(YGG_STATUS_URL)
+            return get_res.status_code < 500, get_res.status_code
+        except httpx.HTTPError:
+            return False, None
+
+
+@app.get("/status/ygg")
+async def ygg_status():
+    online, status_code = await is_ygg_online()
+    return {
+        "service": "ygg.gratis",
+        "url": YGG_STATUS_URL,
+        "status": "online" if online else "offline",
+        "online": online,
+        "http_status": status_code,
+        "checked_at": dt.datetime.now(dt.timezone.utc).isoformat()
+    }
 
 
 @app.get("/api")

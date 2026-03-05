@@ -13,6 +13,8 @@
       --text: #f3f6ff;
       --muted: #b9c4dd;
       --ok: #3ddc97;
+      --offline: #ff6b6b;
+      --checking: #f3be4f;
       --warn-bg: #2a210d;
       --warn-line: #f3be4f;
       --brand: #f6c453;
@@ -145,6 +147,57 @@
       align-items: center;
       gap: 10px;
       min-height: 36px;
+      flex-wrap: wrap;
+    }
+
+    .site-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.79rem;
+      font-weight: 700;
+      border: 1px solid;
+    }
+
+    .site-status .site-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .site-status.online {
+      color: #c0ffe0;
+      background: rgba(61, 220, 151, 0.12);
+      border-color: rgba(61, 220, 151, 0.35);
+    }
+
+    .site-status.online .site-dot {
+      background: var(--ok);
+      box-shadow: 0 0 0 6px rgba(61, 220, 151, 0.14);
+    }
+
+    .site-status.offline {
+      color: #ffd6d6;
+      background: rgba(255, 107, 107, 0.12);
+      border-color: rgba(255, 107, 107, 0.35);
+    }
+
+    .site-status.offline .site-dot {
+      background: var(--offline);
+      box-shadow: 0 0 0 6px rgba(255, 107, 107, 0.14);
+    }
+
+    .site-status.checking {
+      color: #ffedc8;
+      background: rgba(243, 190, 79, 0.12);
+      border-color: rgba(243, 190, 79, 0.35);
+    }
+
+    .site-status.checking .site-dot {
+      background: var(--checking);
+      box-shadow: 0 0 0 6px rgba(243, 190, 79, 0.14);
     }
 
     a {
@@ -234,6 +287,10 @@
             <a href="https://ygg.gratis/" target="_blank" rel="noopener noreferrer">
               ygg.gratis
             </a>
+            <span id="ygg-status" class="site-status checking">
+              <span class="site-dot"></span>
+              <span class="status-text">Verification...</span>
+            </span>
           </div>
         </article>
       </div>
@@ -249,5 +306,33 @@
 
     <p class="footer">PyGeGe status page</p>
   </main>
+  <script>
+    const yggStatusEl = document.getElementById("ygg-status");
+    const yggStatusTextEl = yggStatusEl.querySelector(".status-text");
+
+    function setYggStatus(state, label) {
+      yggStatusEl.classList.remove("online", "offline", "checking");
+      yggStatusEl.classList.add(state);
+      yggStatusTextEl.textContent = label;
+    }
+
+    async function refreshYggStatus() {
+      setYggStatus("checking", "Verification...");
+      try {
+        const res = await fetch("/status/ygg", { cache: "no-store" });
+        const data = await res.json();
+        if (data && data.online === true) {
+          setYggStatus("online", "ONLINE");
+        } else {
+          setYggStatus("offline", "OFFLINE");
+        }
+      } catch (err) {
+        setYggStatus("offline", "OFFLINE");
+      }
+    }
+
+    refreshYggStatus();
+    setInterval(refreshYggStatus, 30000);
+  </script>
 </body>
 </html>

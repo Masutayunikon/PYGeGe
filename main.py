@@ -92,7 +92,7 @@ async def get_french_title_by_id(imdbid: str = None, tmdbid: str = None) -> str 
         async with httpx.AsyncClient() as client:
             if imdbid:
                 r = await client.get(
-                    f"https://api.themoviedb.org/3/find/{imdbid}",
+                    f"https://api.themoviedb.org/3/find/tt{imdbid}",
                     params={"api_key": TMDB_API_KEY, "external_source": "imdb_id"}
                 )
                 data = r.json()
@@ -100,10 +100,11 @@ async def get_french_title_by_id(imdbid: str = None, tmdbid: str = None) -> str 
                 if not results:
                     return None
                 tmdbid = results[0]["id"]
+                mediaType = results[0]["media_type"]
 
             if tmdbid:
                 r = await client.get(
-                    f"https://api.themoviedb.org/3/movie/{tmdbid}",
+                    f"https://api.themoviedb.org/3/{mediaType}/{tmdbid}",
                     params={"api_key": TMDB_API_KEY, "language": "fr-FR"}
                 )
                 data = r.json()

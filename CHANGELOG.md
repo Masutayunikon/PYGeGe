@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/Masutayunikon/PYGeGe/compare/v1.3.0...v1.4.0) (2026-03-07)
+
+
+### Features
+
+* force new version ([5863d91](https://github.com/Masutayunikon/PYGeGe/commit/5863d9193e17b6d63fa81920d047a33302dbdbf5))
+
 ## [1.3.0](https://github.com/Masutayunikon/PYGeGe/compare/v1.2.16...v1.3.0) (2026-03-04)
 
 

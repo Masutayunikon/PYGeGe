@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/Masutayunikon/PYGeGe/compare/v1.4.0...v1.4.1) (2026-03-07)
+
+
+### Bug Fixes
+
+* add None on TMDB key to exclude empty string ([4f796e5](https://github.com/Masutayunikon/PYGeGe/commit/4f796e5c125d9bd0528e8c98badfbaa2e0411eb5))
+
 ## [1.4.0](https://github.com/Masutayunikon/PYGeGe/compare/v1.3.0...v1.4.0) (2026-03-07)
 
 

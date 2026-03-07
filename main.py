@@ -11,7 +11,7 @@ from fastapi.responses import HTMLResponse, Response
 from scraper import search
 from email.utils import formatdate
 
-TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+TMDB_API_KEY = os.getenv("TMDB_API_KEY") or None
 MIN_RESULTS_THRESHOLD = 50
 
 logging.basicConfig(level=logging.INFO)

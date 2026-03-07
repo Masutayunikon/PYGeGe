@@ -314,7 +314,7 @@ async def health():
 
 if __name__ == "__main__":
     #log imbtv is active
-    logger.info("🚀 Démarrage de PyGégé...")
+    logger.info("🚀 Démarrage de PyGégé....")
     logger.info(f"🔑 Clé IMDB TV : {'✅' if TMDB_API_KEY else '❌'}")
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
